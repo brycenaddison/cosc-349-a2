@@ -5,12 +5,13 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "dev": "nodemon --exec \"node -r esbuild-register ./src/index.ts\" -e .ts",
+    "dev": "nodemon --exec \"node --env-file=.env.local -r esbuild-register ./src/index.ts\" -e .ts",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts*\" --max-warnings 0",
-    "start": "node -r esbuild-register ./src/index.ts",
+    "start": "node --env-file=.env.local -r esbuild-register ./src/index.ts",
     "test": "jest --detectOpenHandles"
   },
   "dependencies": {
+    "aws-jwt-verify": "^4.0.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.3",
