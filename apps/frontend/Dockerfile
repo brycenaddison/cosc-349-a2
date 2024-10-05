@@ -1,13 +1,14 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine as build
 
 FROM base AS builder
 
 RUN apk update
 RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 RUN yarn global add turbo
 COPY . .
-RUN turbo prune api --docker
+RUN turbo prune frontend --docker
 
 FROM base AS installer
 RUN apk update
@@ -21,14 +22,14 @@ RUN yarn install
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
 
-RUN yarn turbo build --filter=api...
+RUN yarn turbo build --filter=frontend...
 
-FROM base AS runner
-WORKDIR /app
+FROM ubuntu as runner
 
-RUN addgroup --system --gid 1001 expressjs
-RUN adduser --system --uid 1001 expressjs
-USER expressjs
-COPY --from=installer /app .
+RUN apt-get update
+RUN apt-get install nginx -y
 
-CMD node apps/api/dist/index.js
+COPY --from=installer /app/dist /var/www/html/
+
+EXPOSE 80
+CMD ["nginx","-g","daemon off;"]

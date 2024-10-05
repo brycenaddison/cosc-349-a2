@@ -1,14 +1,14 @@
 version: "3"
 
 services:
-  web:
-    container_name: web
+  frontend:
+    container_name: frontend
     build:
       context: .
-      dockerfile: ./apps/web/Dockerfile
+      dockerfile: ./apps/frontend/Dockerfile
     restart: always
     ports:
-      - 3000:3000
+      - 80:80
     networks:
       - app_network
   api:
