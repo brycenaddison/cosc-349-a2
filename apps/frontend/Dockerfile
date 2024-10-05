@@ -1,35 +1,40 @@
-FROM node:18-alpine as build
-
-FROM base AS builder
+FROM node:18-alpine AS alpine
 
 RUN apk update
 RUN apk add --no-cache libc6-compat
 
+FROM alpine AS base
+
+RUN npm install pnpm turbo --global
+RUN pnpm config set store-dir ~/.pnpm-store
+
+FROM base AS pruner
+
 WORKDIR /app
-RUN yarn global add turbo
 COPY . .
 RUN turbo prune frontend --docker
 
-FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
+FROM base AS builder
+
 WORKDIR /app
 
 # First install dependencies (as they change less often)
-COPY --from=builder /app/out/json/ .
-RUN yarn install
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+
+RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm install --frozen-lockfile
 
 # Build the project and its dependencies
-COPY --from=builder /app/out/full/ .
+COPY --from=pruner /app/out/full/ .
 
-RUN yarn turbo build --filter=frontend...
+RUN turbo build --filter=frontend...
+RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --no-optional
+RUN rm -rf ./**/*/src
 
-FROM ubuntu as runner
+FROM nginx AS runner
 
-RUN apt-get update
-RUN apt-get install nginx -y
-
-COPY --from=installer /app/dist /var/www/html/
+COPY --from=builder /app/apps/frontend/dist /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx","-g","daemon off;"]

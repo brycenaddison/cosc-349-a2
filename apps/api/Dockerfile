@@ -1,34 +1,44 @@
-FROM node:18-alpine AS base
-
-FROM base AS builder
+FROM node:18-alpine AS alpine
 
 RUN apk update
 RUN apk add --no-cache libc6-compat
+
+FROM alpine AS base
+
+RUN npm install pnpm turbo --global
+RUN pnpm config set store-dir ~/.pnpm-store
+
+FROM base AS pruner
+
 WORKDIR /app
-RUN yarn global add turbo
 COPY . .
 RUN turbo prune api --docker
 
-FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
+FROM base AS builder
+
 WORKDIR /app
 
 # First install dependencies (as they change less often)
-COPY --from=builder /app/out/json/ .
-RUN yarn install
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=pruner /app/out/json/ .
+
+RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm install --frozen-lockfile
 
 # Build the project and its dependencies
-COPY --from=builder /app/out/full/ .
+COPY --from=pruner /app/out/full/ .
 
-RUN yarn turbo build --filter=api...
+RUN turbo build --filter=api...
+RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --no-optional
+RUN rm -rf ./**/*/src
 
-FROM base AS runner
-WORKDIR /app
+FROM alpine AS runner
 
 RUN addgroup --system --gid 1001 expressjs
 RUN adduser --system --uid 1001 expressjs
 USER expressjs
-COPY --from=installer /app .
+
+WORKDIR /app
+COPY --from=builder --chown=expressjs/expressjs /app .
 
 CMD node apps/api/dist/index.js
