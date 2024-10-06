@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./components/LoginPage";
 import HomePage from "./components/HomePage";
 import ConfirmUserPage from "./components/ConfirmUserPage";
-import { Header } from "./components/Header";
+import { Layout } from "./components/Layout";
 
 const isAuthenticated = () => {
   const accessToken = sessionStorage.getItem("accessToken");
@@ -16,9 +16,9 @@ const router = (
         path="/"
         element={
           isAuthenticated() ? (
-            <Header>
+            <Layout>
               <HomePage />
-            </Header>
+            </Layout>
           ) : (
             <Navigate replace to="/login" />
           )
