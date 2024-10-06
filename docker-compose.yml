@@ -4,21 +4,48 @@ services:
     build:
       context: .
       dockerfile: ./apps/frontend/Dockerfile
-    restart: always
-    ports:
-      - 80:80
-    networks:
-      - app_network
+
   api:
     image: ${DOCKER_REGISTRY}/cosc-349-a2/api
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
+
+  dev-db:
+    image: postgres
+    container_name: dev-db
     restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
     ports:
-      - 3001:3001
+      - 5432:5432
     networks:
       - app_network
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    profiles:
+      - dev
+  pgadmin:
+    container_name: container-pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - dev-db
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    restart: unless-stopped
+    networks:
+      - app_network
+    profiles:
+      - dev
 
 networks:
   app_network:
+
+volumes:
+  postgres_db:
+    driver: local
