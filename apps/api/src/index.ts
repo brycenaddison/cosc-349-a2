@@ -1,4 +1,5 @@
 import { jwtVerifier } from "./auth";
+import { shutdown } from "./pg";
 import { createServer } from "./server";
 
 const port = process.env.PORT || 3001;
@@ -15,3 +16,9 @@ jwtVerifier
       console.log(`api running on ${port}`);
     })
   );
+
+process.on("SIGINT", async () => {
+  await shutdown();
+  console.log("Closed postgres connections...");
+  process.exit();
+});

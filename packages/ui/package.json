@@ -38,6 +38,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.0"
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.2",
+    "next-themes": "^0.3.0",
+    "sonner": "^1.5.0"
   }
 }
