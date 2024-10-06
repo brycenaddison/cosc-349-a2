@@ -5,7 +5,7 @@ const config = {
   port: parseInt(process.env.DB_PORT ?? "5432"),
   user: process.env.DB_USER ?? "postgres",
   password: process.env.DB_PASSWORD ?? "password",
-  database: process.env.DB_NAME ?? "database",
+  database: process.env.DB_NAME ?? "postgres",
 };
 
 const pool = new Pool(config);

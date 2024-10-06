@@ -1,5 +1,6 @@
 import { refresh } from "./authService";
 
+/** Attempts to fetch text from backend of authenticated user. */
 export const getText = async (): Promise<string> => {
   const res = await fetch(import.meta.env.VITE_API_HOST, {
     method: "GET",
@@ -19,8 +20,8 @@ export const getText = async (): Promise<string> => {
   return res.text();
 };
 
+/** Attempts to save text to backend of authenticated user. */
 export const saveText = async (value: string): Promise<number> => {
-  console.log(value);
   const res = await fetch(import.meta.env.VITE_API_HOST, {
     method: "POST",
     headers: {

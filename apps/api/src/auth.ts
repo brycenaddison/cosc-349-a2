@@ -11,6 +11,12 @@ export const jwtVerifier = CognitoJwtVerifier.create({
   scope: "aws.cognito.signin.user.admin",
 });
 
+/**
+ * Express.js middleware for authenticating Cognito JWTs.
+ *
+ * Returns 401 error if token is expired, triggering a refresh, or a 403
+ * error if token is invalid.
+ */
 export const cognito = async (
   req: Request,
   res: Response,

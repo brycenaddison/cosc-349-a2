@@ -1,3 +1,5 @@
+/**
+ * Config for Amazon Cognito user pool. This information is safe to be public. */
 const config = {
   region: "us-east-1",
   userPoolId: "us-east-1_KvEgTmwzv",

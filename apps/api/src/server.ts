@@ -14,7 +14,8 @@ export const createServer = (): Express => {
     .use(urlencoded({ extended: true }))
     .use(json())
     .use(cors())
-    .get("/", cognito, async (req, res) => {
+    /** Sends the user's notes as text if authenticated with Cognito. */
+    .get("/", cognito, async (_, res) => {
       const username = res.locals.payload.username;
       try {
         const query = await pg.query("select text from notes where uid = $1", [
@@ -30,6 +31,10 @@ export const createServer = (): Express => {
         return res.status(500).send({ message: e });
       }
     })
+    /**
+     * Accepts body as {text: data}, updates authenticated users notes and
+     * returns {timestamp: [epoch timestamp last modified]} if successful.
+     */
     .post("/", cognito, async (req, res) => {
       const username = res.locals.payload.username;
 

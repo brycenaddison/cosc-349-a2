@@ -11,6 +11,8 @@ export const cognitoClient = new CognitoIdentityProviderClient({
   region: config.region,
 });
 
+/**
+ * Authenticates with username and password, storing tokens in session storage. */
 export const signIn = (username: string, password: string) => {
   const params = {
     AuthFlow: "USER_PASSWORD_AUTH",
@@ -24,6 +26,7 @@ export const signIn = (username: string, password: string) => {
   return authenticate(params);
 };
 
+/** Attempts to authenticate with the refresh token in storage. */
 export const refresh = async () => {
   const params = {
     AuthFlow: "REFRESH_TOKEN_AUTH",
@@ -58,6 +61,7 @@ const authenticate = async (params: InitiateAuthCommandInput) => {
   }
 };
 
+/** Signs up to Cognito user pool. */
 export const signUp = async (email: string, password: string) => {
   const params = {
     ClientId: config.clientId,
@@ -81,6 +85,7 @@ export const signUp = async (email: string, password: string) => {
   }
 };
 
+/** Sends email confirmation to Cognito. */
 export const confirmSignUp = async (username: string, code: string) => {
   const params = {
     ClientId: config.clientId,
@@ -113,7 +118,14 @@ const parseJwt = (token: string) => {
   return JSON.parse(jsonPayload);
 };
 
-export const useAuth = () => {
+/**
+ * A hook returning the email in the ID token and the refresh token from
+ * session storage.
+ */
+export const useAuth = (): {
+  email: string;
+  refreshToken: string;
+} => {
   const idToken = parseJwt(sessionStorage.idToken.toString());
 
   return {

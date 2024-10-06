@@ -1,11 +1,9 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn, signUp } from "../services/authService";
 import { Button, Input } from "@repo/ui";
 
+/** Simple login and create account page. */
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,11 +15,12 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const session = await signIn(email, password);
-      console.log("Sign in successful", session);
+
       if (session && typeof session.AccessToken !== "undefined") {
         sessionStorage.setItem("accessToken", session.AccessToken);
+
         if (sessionStorage.getItem("accessToken")) {
-          window.location.href = "/home";
+          window.location.href = "/";
         } else {
           console.error("Session token was not set properly.");
         }

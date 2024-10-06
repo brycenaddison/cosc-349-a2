@@ -3,7 +3,8 @@ import { getText, saveText } from "../services/dataService";
 import { toast } from "@repo/ui";
 import { useQuery } from "@tanstack/react-query";
 
-const HomePage = () => {
+/** The main page of the app, fetches and handles notepad data and saving. */
+export default function HomePage() {
   const { data: initialText } = useQuery({
     queryKey: [sessionStorage.accessToken],
     queryFn: () =>
@@ -36,6 +37,4 @@ const HomePage = () => {
       }
     />
   );
-};
-
-export default HomePage;
+}

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
+/** Wraps pages of the app with nav bar, query provider, and toaster. */
 export const Layout = ({ children }: { children: JSX.Element }) => {
   const navigate = useNavigate();
   const { email } = useAuth();

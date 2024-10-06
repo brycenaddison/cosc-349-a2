@@ -1,15 +1,13 @@
-// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// SPDX-License-Identifier: Apache-2.0
-
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { confirmSignUp } from "../services/authService";
 import { Button, Input } from "@repo/ui";
 
-const ConfirmUserPage = () => {
+/** Simple page with form for confirming email. */
+export default function ConfirmUserPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  // eslint-disable-next-line
+
   const [email, setEmail] = useState(location.state?.email || "");
   const [confirmationCode, setConfirmationCode] = useState("");
 
@@ -52,6 +50,4 @@ const ConfirmUserPage = () => {
       </div>
     </div>
   );
-};
-
-export default ConfirmUserPage;
+}
