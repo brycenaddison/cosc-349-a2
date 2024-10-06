@@ -9,6 +9,8 @@ export const Notepad = ({ value, onSave }: NotepadProps): JSX.Element => {
   const [text, setText] = useState<string>(value);
 
   useEffect(() => {
+    if (value === text) return;
+
     const getData = setTimeout(() => {
       onSave(text);
     }, 3000);

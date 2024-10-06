@@ -3,7 +3,6 @@ import {
   InitiateAuthCommand,
   SignUpCommand,
   ConfirmSignUpCommand,
-  AuthFlowType,
   InitiateAuthCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import config from "../config/config";
@@ -116,7 +115,6 @@ const parseJwt = (token: string) => {
 
 export const useAuth = () => {
   const idToken = parseJwt(sessionStorage.idToken.toString());
-  const accessToken = parseJwt(sessionStorage.accessToken.toString());
 
   return {
     email: idToken.email,
