@@ -4,7 +4,12 @@ services:
     build:
       context: .
       dockerfile: ./apps/frontend/Dockerfile
-
+      args:
+        API_HOST: ${API_HOST}
+        AWS_REGION: ${AWS_REGION}
+        AWS_USER_POOL_ID: ${AWS_USER_POOL_ID}
+        AWS_CLIENT_ID: ${AWS_CLIENT_ID}
+        
   api:
     image: ${DOCKER_REGISTRY}/online-notepad/api
     build:

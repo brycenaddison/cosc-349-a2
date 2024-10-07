@@ -1,3 +1,8 @@
+ARG API_HOST
+ARG AWS_REGION
+ARG AWS_USER_POOL_ID
+ARG AWS_CLIENT_ID
+
 FROM node:20-alpine AS alpine
 
 RUN apk update
@@ -28,11 +33,14 @@ RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm install --frozen-lockfi
 # Build the project and its dependencies
 COPY --from=pruner /app/out/full/ .
 
-# these values are fine to be public, can also use build time args but this is easier for now
-ENV VITE_API_HOST=http://3.94.131.159:3001/
-ENV VITE_REGION=us-east-1
-ENV VITE_USER_POOL_ID=us-east-1_KvEgTmwzv
-ENV VITE_CLIENT_ID=lmubjg1u349bcc9ptbaa6v300
+ARG API_HOST
+ARG AWS_REGION
+ARG AWS_USER_POOL_ID
+ARG AWS_CLIENT_ID
+ENV VITE_API_HOST=${API_HOST}
+ENV VITE_REGION=${AWS_REGION}
+ENV VITE_USER_POOL_ID=${AWS_USER_POOL_ID}
+ENV VITE_CLIENT_ID=${AWS_CLIENT_ID}
 
 RUN turbo build --filter=frontend...
 RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --no-optional
