@@ -12,7 +12,16 @@ Then, running `pnpm run dev` will start the development servers for both the fro
 
 # Deployment
 
-We use containers to build the production software. To deploy the containers to the container registry, first ensure `DOCKER_REGISTRY` is set to the appropriate, locally authenticated container registry (i.e. `xxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com`), then run `docker-compose build` and `docker-compose push`. An admin can then log into an EC2 instance, pull the containers from the repository, then run them with the appropriate environment variables to finish deploying.
+We use containers to build the production software. To deploy the containers to the container registry, first ensure that the proper build-time arguments are set:
+```ini
+DOCKER_REGISTRY=xxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com
+AWS_REGION=us-east-1
+AWS_USER_POOL_ID=us-east-1_KvEgTmwzv
+AWS_CLIENT_ID=lmubjg1u349bcc9ptbaa6v300
+API_HOST=http://3.94.131.159:3001/
+```
+`DOCKER_REGISTRY` should be set to the appropriate, locally authenticated container registry. The rest of these values are public, but subject to change depending on the environment. 
+Once the environment variables are configured, run `docker-compose build` and `docker-compose push`. An admin can then log into an EC2 instance, pull the containers from the repository, then run them with the appropriate run-time environment variables to finish deploying. In this repository, `docker-compose.prod.yml` represents the docker compose file being used to deploy on the EC2 instance.
 
 # Architecture
 

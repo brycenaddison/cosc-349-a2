@@ -4,7 +4,7 @@ Before running, ensure that the environment variables have been set. Create a fi
 For local development, the following should suffice. Note that it is fine that AWS User Pool ID and Client ID are public information.
 ```ini
 AWS_USER_POOL_ID="us-east-1_KvEgTmwzv"
-AWS_CLIENT_ID="45ndt7qmksmm1kt7ph0trkcpfn"
+AWS_CLIENT_ID="lmubjg1u349bcc9ptbaa6v300"
 DB_HOST="localhost"
 DB_PORT="5432"
 DB_USER="postgres"
