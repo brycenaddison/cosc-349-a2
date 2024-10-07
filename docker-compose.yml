@@ -1,12 +1,12 @@
 services:
   frontend:
-    image: ${DOCKER_REGISTRY}/cosc-349-a2/frontend
+    image: ${DOCKER_REGISTRY}/online-notepad/frontend
     build:
       context: .
       dockerfile: ./apps/frontend/Dockerfile
 
   api:
-    image: ${DOCKER_REGISTRY}/cosc-349-a2/api
+    image: ${DOCKER_REGISTRY}/online-notepad/api
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile

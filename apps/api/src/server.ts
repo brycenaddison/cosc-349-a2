@@ -22,7 +22,7 @@ export const createServer = (): Express => {
           username,
         ]);
 
-        const result = query.rows[0].text ?? initialMessage;
+        const result = (query.rows[0] ?? { text: initialMessage }).text;
 
         return res.status(200).send(result);
       } catch (e) {
