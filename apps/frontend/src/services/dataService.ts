@@ -1,8 +1,10 @@
 import { refresh } from "./authService";
 
+const getApi = (): string => `http://${window.location.hostname}:3001/`;
+
 /** Attempts to fetch text from backend of authenticated user. */
 export const getText = async (): Promise<string> => {
-  const res = await fetch(import.meta.env.VITE_API_HOST, {
+  const res = await fetch(getApi(), {
     method: "GET",
     headers: {
       authorization: sessionStorage.accessToken,
@@ -22,7 +24,7 @@ export const getText = async (): Promise<string> => {
 
 /** Attempts to save text to backend of authenticated user. */
 export const saveText = async (value: string): Promise<number> => {
-  const res = await fetch(import.meta.env.VITE_API_HOST, {
+  const res = await fetch(getApi(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

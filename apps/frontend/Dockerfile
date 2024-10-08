@@ -1,4 +1,3 @@
-ARG API_HOST
 ARG AWS_REGION
 ARG AWS_USER_POOL_ID
 ARG AWS_CLIENT_ID
@@ -33,11 +32,9 @@ RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm install --frozen-lockfi
 # Build the project and its dependencies
 COPY --from=pruner /app/out/full/ .
 
-ARG API_HOST
 ARG AWS_REGION
 ARG AWS_USER_POOL_ID
 ARG AWS_CLIENT_ID
-ENV VITE_API_HOST=${API_HOST}
 ENV VITE_REGION=${AWS_REGION}
 ENV VITE_USER_POOL_ID=${AWS_USER_POOL_ID}
 ENV VITE_CLIENT_ID=${AWS_CLIENT_ID}
@@ -47,6 +44,8 @@ RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --no-optional
 RUN rm -rf ./**/*/src
 
 FROM nginx AS runner
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=builder /app/apps/frontend/dist /usr/share/nginx/html
 
